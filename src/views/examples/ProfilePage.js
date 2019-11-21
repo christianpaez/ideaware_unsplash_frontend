@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 
 // core components
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
+import IndexNavbar from "components/Navbars/IndexNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DefaultFooter from "components/Footers/DefaultFooter.js";
 
@@ -32,95 +32,66 @@ function ProfilePage() {
   });
   return (
     <>
-      <ExamplesNavbar />
+      <IndexNavbar />
       <div className="wrapper">
-        <ProfilePageHeader />
+        {/* <ProfilePageHeader /> */}
         <div className="section">
           <Container>
             <div className="button-container">
-              <Button className="btn-round" color="info" size="lg">
-                Follow
+              <Button className="btn-round" color="info" size="lg"
+               id="latest_tooltip"
+               onClick={e => {
+                e.preventDefault();
+                setPills("1");
+                 }}>
+               <i className="fab fa-twitter mr-2"></i>
+                Latest
               </Button>
-              <Button
+              <Button className="btn-round" color="info" size="lg"
+               id="search_tooltip"
+               onClick={e => {
+                e.preventDefault();
+                setPills("2");
+                 }}>
+               <i className="fab fa-twitter mr-2"></i>
+                Search
+              </Button>
+              {/* <Button
                 className="btn-round btn-icon"
                 color="default"
                 id="tooltip515203352"
                 size="lg"
               >
                 <i className="fab fa-twitter"></i>
-              </Button>
-              <UncontrolledTooltip delay={0} target="tooltip515203352">
-                Follow me on Twitter
+              </Button> */}
+              <UncontrolledTooltip delay={0} target="latest_tooltip">
+                See latest images uploaded to unplash
               </UncontrolledTooltip>
-              <Button
+              {/* <Button
                 className="btn-round btn-icon"
                 color="default"
                 id="tooltip340339231"
                 size="lg"
               >
                 <i className="fab fa-instagram"></i>
-              </Button>
-              <UncontrolledTooltip delay={0} target="tooltip340339231">
-                Follow me on Instagram
+              </Button> */}
+              <UncontrolledTooltip delay={0} target="search_tooltip">
+                Search on Unsplash
               </UncontrolledTooltip>
             </div>
-            <h3 className="title">About me</h3>
-            <h5 className="description">
-              An artist of considerable range, Ryan — the name taken by
-              Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs
-              and records all of his own music, giving it a warm, intimate feel
-              with a solid groove structure. An artist of considerable range.
-            </h5>
+
             <Row>
-              <Col className="ml-auto mr-auto" md="6">
+              {/* <Col className="ml-auto mr-auto" md="6">
                 <h4 className="title text-center">My Portfolio</h4>
-                <div className="nav-align-center">
-                  <Nav
-                    className="nav-pills-info nav-pills-just-icons"
-                    pills
-                    role="tablist"
-                  >
-                    <NavItem>
-                      <NavLink
-                        className={pills === "1" ? "active" : ""}
-                        href="#pablo"
-                        onClick={e => {
-                          e.preventDefault();
-                          setPills("1");
-                        }}
-                      >
-                        <i className="now-ui-icons design_image"></i>
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={pills === "2" ? "active" : ""}
-                        href="#pablo"
-                        onClick={e => {
-                          e.preventDefault();
-                          setPills("2");
-                        }}
-                      >
-                        <i className="now-ui-icons location_world"></i>
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={pills === "3" ? "active" : ""}
-                        href="#pablo"
-                        onClick={e => {
-                          e.preventDefault();
-                          setPills("3");
-                        }}
-                      >
-                        <i className="now-ui-icons sport_user-run"></i>
-                      </NavLink>
-                    </NavItem>
-                  </Nav>
-                </div>
-              </Col>
+              </Col> */}
               <TabContent className="gallery" activeTab={"pills" + pills}>
                 <TabPane tabId="pills1">
+                <Col className="ml-auto mr-auto" md="6">
+                  <h3 className="title">Latest</h3>
+                  <h5 className="description">
+                    Check out the latest pictures added to unsplash.com
+                  </h5>
+                </Col> 
                   <Col className="ml-auto mr-auto" md="10">
                     <Row className="collections">
                       <Col md="6">
@@ -151,6 +122,12 @@ function ProfilePage() {
                   </Col>
                 </TabPane>
                 <TabPane tabId="pills2">
+                <Col className="ml-auto mr-auto" md="6">
+                  <h3 className="title">Search</h3>
+                  <h5 className="description">
+                   Use the form below to search images on unsplash.com
+                  </h5>
+                </Col> 
                   <Col className="ml-auto mr-auto" md="10">
                     <Row className="collections">
                       <Col md="6">
@@ -175,36 +152,6 @@ function ProfilePage() {
                           alt="..."
                           className="img-raised"
                           src={require("assets/img/bg8.jpg")}
-                        ></img>
-                      </Col>
-                    </Row>
-                  </Col>
-                </TabPane>
-                <TabPane tabId="pills3">
-                  <Col className="ml-auto mr-auto" md="10">
-                    <Row className="collections">
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg3.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg8.jpg")}
-                        ></img>
-                      </Col>
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg7.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg6.jpg")}
                         ></img>
                       </Col>
                     </Row>
