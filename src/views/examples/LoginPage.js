@@ -1,24 +1,11 @@
-import React from "react";
-
-// reactstrap components
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Container,
-  Col
-} from "reactstrap";
-
+import TransparentFooter from "components/Footers/TransparentFooter.js";
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
-import TransparentFooter from "components/Footers/TransparentFooter.js";
+import React from "react";
+// reactstrap components
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
+
+
 
 function LoginPage() {
   const [firstFocus, setFirstFocus] = React.useState(false);

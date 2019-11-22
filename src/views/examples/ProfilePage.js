@@ -1,34 +1,14 @@
-import React, {useEffect, useState} from "react";
-
-// reactstrap components
-import {
-  Button,
-  NavItem,
-  NavLink,
-  Nav,
-  TabContent,
-  TabPane,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Container,
-  Spinner, 
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Input, 
-  Row,
-  Col,
-  UncontrolledTooltip
-} from "reactstrap";
 //server config
 import axios from 'axios';
-import {URL, UNSPLASH_ACCESS_KEY} from '../../config/server'
-
+import DefaultFooter from "components/Footers/DefaultFooter.js";
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
-import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
-import DefaultFooter from "components/Footers/DefaultFooter.js";
+import React, { useEffect, useState } from "react";
+// reactstrap components
+import { Button, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Pagination, PaginationItem, PaginationLink, Row, Spinner, TabContent, TabPane, UncontrolledTooltip } from "reactstrap";
+import { UNSPLASH_ACCESS_KEY, URL } from '../../config/server';
+
+
 
 function ProfilePage() {
   const [pills, setPills] = useState("latest");
@@ -36,7 +16,8 @@ function ProfilePage() {
   const [searchedImages, setSearchedImages] = useState([]);
   const [leftFocus, setLeftFocus] = React.useState(false);
   const [latestImagesPage, setLatestImagesPage] = useState(1);
-  const [imagesLoading, setImagesLoading] = useState(false);
+  const [latestImagesLoading, setLatestImagesLoading] = useState(false);
+  const [searchImagesLoading, setSearchImagesLoading] = useState(false);
   const [searchImagesPage, setSearchImagesPage] = useState(1);
   const [searchParams, setSearchParams] = useState('');
   useEffect(() => {
@@ -50,8 +31,19 @@ function ProfilePage() {
     };
   }, [latestImagesPage]);
 
+  useEffect(() => {
+    searchImages();
+    document.body.classList.add("profile-page");
+    document.body.classList.add("sidebar-collapse");
+    document.documentElement.classList.remove("nav-open");
+    return function cleanup() {
+      document.body.classList.remove("profile-page");
+      document.body.classList.remove("sidebar-collapse");
+    };
+  }, [searchImagesPage]);
+
   const getLatestImages = ()=>{
-    setImagesLoading(true)
+    setLatestImagesLoading(true)
     const headers = {
       "Authorization": `Client-ID ${UNSPLASH_ACCESS_KEY}`,
       "Accept-Version": "v1"
@@ -90,11 +82,11 @@ function ProfilePage() {
         }
         console.log(error.config);
       })
-      .finally(()=>{setImagesLoading(false)})
+      .finally(()=>{setLatestImagesLoading(false)})
   }
 
   const searchImages = ()=>{
-    setImagesLoading(true)
+    setSearchImagesLoading(true)
     console.log(searchImagesPage)
     const headers = {
       "Authorization": `Client-ID ${UNSPLASH_ACCESS_KEY}`,
@@ -136,8 +128,10 @@ function ProfilePage() {
         }
         console.log(error.config);
       })
-      .finally(()=>{setImagesLoading(false)})
+      .finally(()=>{setSearchImagesLoading(false)})
   }
+
+
 
   const latestImagesPrevPaginate = ()=> {
     if(latestImagesPage === 1){
@@ -149,27 +143,32 @@ function ProfilePage() {
   }
 
   const searchPaginate = (direction)=>{
-    if (direction === "next"){
-      if(searchedImages.length === 0){
-        return
-      }
-      else{
-        setSearchImagesPage(searchImagesPage + 1)
-        console.log(searchImagesPage)
-      }
-    }
-    else if(direction === "previous"){
-      if(searchImagesPage === 1){
+     if(direction === "previous"){
+        if(searchImagesPage === 1){
+        console.log("page 1")
         return;
       }
-      else{
+      else{ 
         setSearchImagesPage(searchImagesPage - 1)
+       console.log("page - 1")
+      }
+    }
+    else if (direction === "next"){
+      
+      if(searchedImages.length > 0){
+        console.log("current page", searchImagesPage)
+        setSearchImagesPage(searchImagesPage + 1)
+        console.log("next page", searchImagesPage)
+      }
+      else{
+        console.log("page 0")
+        return
       }
     }
     else {
       return
     }
-    searchImages();
+    console.log("next page", searchImagesPage)
   }
 
   const handleChange = (event)=> {
@@ -232,15 +231,20 @@ function ProfilePage() {
                 </Col> 
                   <Col className="ml-auto mr-auto" md="10">
                     <Row className="collections justify-content-center">
-                      {
-                        imagesLoading ? (
+                    {
+                        latestImagesLoading ? (
                           <Col className = "pb-5"  style = {{justifyContent: "center", display: "flex"}} md="6">
                             <Spinner style={{ width: '3rem', height: '3rem'}} />
                           </Col>
+                        ) : latestImages.length === 0 ? (
+                          <Col className = "pb-5"  style = {{justifyContent: "center", display: "flex"}} md="6">
+                            <div>No results.</div>
+                          </Col>
                         ) : latestImages.map((element, index)=>{
-                          return(<Col md="6" key = {index}>
+                          return(<Col className= "d-flex  justify-content-center" 
+                                      md="6" key = {index}>
                             <img
-                              alt={element.alt_description}
+                              alt= {element.alt_description}
                               height= "300"
                               width = "445"
                               className="img-raised"
@@ -328,7 +332,7 @@ function ProfilePage() {
                   <Col className="ml-auto mr-auto" md="10">
                     <Row className="collections justify-content-center">
                       {
-                        imagesLoading ? (
+                        searchImagesLoading ? (
                           <Col className = "pb-5"  style = {{justifyContent: "center", display: "flex"}} md="6">
                             <Spinner style={{ width: '3rem', height: '3rem'}} />
                           </Col>
@@ -337,7 +341,8 @@ function ProfilePage() {
                             <div>No results.</div>
                           </Col>
                         ) : searchedImages.map((element, index)=>{
-                          return(<Col md="6" key = {index}>
+                          return(<Col className= "d-flex  justify-content-center" 
+                                      md="6" key = {index}>
                             <img
                               alt= {element.alt_description}
                               height= "300"
@@ -359,7 +364,7 @@ function ProfilePage() {
                           <PaginationItem>
                             <PaginationLink
                               aria-label="Previous"
-                              onClick={() => searchPaginate("previous")}
+                              onClick={() => {searchPaginate("previous")}}
                             >
                               <span aria-hidden={true}>
                                 <i
@@ -375,7 +380,7 @@ function ProfilePage() {
                           <PaginationItem>
                             <PaginationLink
                               aria-label="Next"
-                              onClick={()=> searchPaginate("next")}
+                              onClick={()=> {searchPaginate("next")}}
                             >
                               <span aria-hidden={true}>
                                 <i

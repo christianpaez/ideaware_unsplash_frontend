@@ -1,19 +1,7 @@
 import React from "react";
-
 // reactstrap components
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  TabContent,
-  TabPane,
-  Container,
-  Row,
-  Col
-} from "reactstrap";
+import { Card, CardBody, CardHeader, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
+
 
 // core components
 

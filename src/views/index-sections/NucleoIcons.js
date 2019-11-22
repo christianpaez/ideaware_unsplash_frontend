@@ -1,6 +1,6 @@
 import React from "react";
 // reactstrap components
-import { Button, Container, Row, Col } from "reactstrap";
+import { Button, Col, Container, Row } from "reactstrap";
 
 // core components
 

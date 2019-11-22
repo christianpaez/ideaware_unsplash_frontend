@@ -1,19 +1,7 @@
 import React from "react";
-
 // reactstrap components
-import {
-  Badge,
-  NavItem,
-  NavLink,
-  Nav,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Progress,
-  Container,
-  Row,
-  Col
-} from "reactstrap";
+import { Badge, Col, Container, Nav, NavItem, NavLink, Pagination, PaginationItem, PaginationLink, Progress, Row } from "reactstrap";
+
 
 // core components
 

@@ -1,21 +1,12 @@
-import React from "react";
-
-// reactstrap components
-import {
-  Button,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Container,
-  Row,
-  Col
-} from "reactstrap";
-
+import DefaultFooter from "components/Footers/DefaultFooter.js";
+import LandingPageHeader from "components/Headers/LandingPageHeader.js";
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
-import LandingPageHeader from "components/Headers/LandingPageHeader.js";
-import DefaultFooter from "components/Footers/DefaultFooter.js";
+import React from "react";
+// reactstrap components
+import { Button, Col, Container, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
+
+
 
 function LandingPage() {
   const [firstFocus, setFirstFocus] = React.useState(false);

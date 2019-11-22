@@ -1,14 +1,7 @@
 import React from "react";
-
 // reactstrap components
-import {
-  Container,
-  Row,
-  Col,
-  Carousel,
-  CarouselItem,
-  CarouselIndicators
-} from "reactstrap";
+import { Carousel, CarouselIndicators, CarouselItem, Col, Container, Row } from "reactstrap";
+
 
 // core components
 
