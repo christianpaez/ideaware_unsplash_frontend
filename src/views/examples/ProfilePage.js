@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 // reactstrap components
 import {
@@ -8,11 +8,22 @@ import {
   Nav,
   TabContent,
   TabPane,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
   Container,
+  Spinner, 
+  InputGroupAddon,
+  InputGroupText,
+  InputGroup,
+  Input, 
   Row,
   Col,
   UncontrolledTooltip
 } from "reactstrap";
+//server config
+import axios from 'axios';
+import {URL, UNSPLASH_ACCESS_KEY} from '../../config/server'
 
 // core components
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
@@ -20,8 +31,16 @@ import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DefaultFooter from "components/Footers/DefaultFooter.js";
 
 function ProfilePage() {
-  const [pills, setPills] = React.useState("2");
-  React.useEffect(() => {
+  const [pills, setPills] = useState("latest");
+  const [latestImages, setLatestImages] = useState([]);
+  const [searchedImages, setSearchedImages] = useState([]);
+  const [leftFocus, setLeftFocus] = React.useState(false);
+  const [latestImagesPage, setLatestImagesPage] = useState(1);
+  const [imagesLoading, setImagesLoading] = useState(false);
+  const [searchImagesPage, setSearchImagesPage] = useState(1);
+  const [searchParams, setSearchParams] = useState('');
+  useEffect(() => {
+    getLatestImages();
     document.body.classList.add("profile-page");
     document.body.classList.add("sidebar-collapse");
     document.documentElement.classList.remove("nav-open");
@@ -29,7 +48,134 @@ function ProfilePage() {
       document.body.classList.remove("profile-page");
       document.body.classList.remove("sidebar-collapse");
     };
-  });
+  }, [latestImagesPage]);
+
+  const getLatestImages = ()=>{
+    setImagesLoading(true)
+    const headers = {
+      "Authorization": `Client-ID ${UNSPLASH_ACCESS_KEY}`,
+      "Accept-Version": "v1"
+    }
+
+    const params = {
+      page: latestImagesPage, 
+      per_page: 8
+    }
+  
+    axios({
+      method: 'get',
+      url: `${URL}/photos`,
+      headers: headers, 
+      params: params
+    })
+      .then(function (response) {
+        console.log(response)
+        setLatestImages(response.data)
+      })
+      .catch(function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      })
+      .finally(()=>{setImagesLoading(false)})
+  }
+
+  const searchImages = ()=>{
+    setImagesLoading(true)
+    console.log(searchImagesPage)
+    const headers = {
+      "Authorization": `Client-ID ${UNSPLASH_ACCESS_KEY}`,
+      "Accept-Version": "v1"
+    }
+    console.log(searchParams)
+
+    const params = {
+      query: searchParams,
+      page: searchImagesPage, 
+      per_page: 8
+    }
+  
+    axios({
+      method: 'get',
+      url: `${URL}/search/photos`,
+      headers: headers, 
+      params: params
+    })
+      .then(function (response) {
+        console.log(response)
+        setSearchedImages(response.data.results)
+      })
+      .catch(function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      })
+      .finally(()=>{setImagesLoading(false)})
+  }
+
+  const latestImagesPrevPaginate = ()=> {
+    if(latestImagesPage === 1){
+      return;
+    }
+    else{
+      setLatestImagesPage(latestImagesPage - 1)
+    } 
+  }
+
+  const searchPaginate = (direction)=>{
+    if (direction === "next"){
+      if(searchedImages.length === 0){
+        return
+      }
+      else{
+        setSearchImagesPage(searchImagesPage + 1)
+        console.log(searchImagesPage)
+      }
+    }
+    else if(direction === "previous"){
+      if(searchImagesPage === 1){
+        return;
+      }
+      else{
+        setSearchImagesPage(searchImagesPage - 1)
+      }
+    }
+    else {
+      return
+    }
+    searchImages();
+  }
+
+  const handleChange = (event)=> {
+    setSearchParams(event.target.value);
+  }
+
   return (
     <>
       <IndexNavbar />
@@ -42,28 +188,20 @@ function ProfilePage() {
                id="latest_tooltip"
                onClick={e => {
                 e.preventDefault();
-                setPills("1");
+                setPills("latest");
                  }}>
-               <i className="fab fa-twitter mr-2"></i>
+               <i className="fa fa-list mr-2"></i>
                 Latest
               </Button>
               <Button className="btn-round" color="info" size="lg"
                id="search_tooltip"
                onClick={e => {
                 e.preventDefault();
-                setPills("2");
+                setPills("search");
                  }}>
-               <i className="fab fa-twitter mr-2"></i>
+               <i className="fa fa-search mr-2"></i>
                 Search
               </Button>
-              {/* <Button
-                className="btn-round btn-icon"
-                color="default"
-                id="tooltip515203352"
-                size="lg"
-              >
-                <i className="fab fa-twitter"></i>
-              </Button> */}
               <UncontrolledTooltip delay={0} target="latest_tooltip">
                 See latest images uploaded to unplash
               </UncontrolledTooltip>
@@ -79,13 +217,13 @@ function ProfilePage() {
                 Search on Unsplash
               </UncontrolledTooltip>
             </div>
-
             <Row>
               {/* <Col className="ml-auto mr-auto" md="6">
                 <h4 className="title text-center">My Portfolio</h4>
               </Col> */}
-              <TabContent className="gallery" activeTab={"pills" + pills}>
-                <TabPane tabId="pills1">
+              <TabContent className="gallery" activeTab={pills}
+              style = {{width: "100%"}}>
+                <TabPane tabId="latest">
                 <Col className="ml-auto mr-auto" md="6">
                   <h3 className="title">Latest</h3>
                   <h5 className="description">
@@ -93,66 +231,161 @@ function ProfilePage() {
                   </h5>
                 </Col> 
                   <Col className="ml-auto mr-auto" md="10">
-                    <Row className="collections">
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg1.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg3.jpg")}
-                        ></img>
-                      </Col>
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg8.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg7.jpg")}
-                        ></img>
+                    <Row className="collections justify-content-center">
+                      {
+                        imagesLoading ? (
+                          <Col className = "pb-5"  style = {{justifyContent: "center", display: "flex"}} md="6">
+                            <Spinner style={{ width: '3rem', height: '3rem'}} />
+                          </Col>
+                        ) : latestImages.map((element, index)=>{
+                          return(<Col md="6" key = {index}>
+                            <img
+                              alt={element.alt_description}
+                              height= "300"
+                              width = "445"
+                              className="img-raised"
+                              src={element.urls.regular}
+                            ></img>
+                          </Col>)
+                        })
+                      }
+                    </Row>
+                    <Row>
+                      <Col md="12">
+                        <Pagination
+                          style={{
+                            display: "flex",
+                            justifyContent: "center"
+                          }}>
+                          <PaginationItem>
+                            <PaginationLink
+                              aria-label="Previous"
+                              onClick={() => latestImagesPrevPaginate()}
+                            >
+                              <span aria-hidden={true}>
+                                <i
+                                  aria-hidden={true}
+                                  className="fa fa-angle-double-left"
+                                ></i>
+                              </span>
+                            </PaginationLink>
+                          </PaginationItem>
+                          <PaginationItem>
+                           <p>Page: {latestImagesPage}</p>
+                          </PaginationItem>
+                          <PaginationItem>
+                            <PaginationLink
+                              aria-label="Next"
+                              onClick={()=> setLatestImagesPage(latestImagesPage + 1)}
+                            >
+                              <span aria-hidden={true}>
+                                <i
+                                  aria-hidden={true}
+                                  className="fa fa-angle-double-right"
+                                ></i>
+                              </span>
+                            </PaginationLink>
+                          </PaginationItem>
+                        </Pagination>
                       </Col>
                     </Row>
                   </Col>
                 </TabPane>
-                <TabPane tabId="pills2">
+                <TabPane tabId="search">
                 <Col className="ml-auto mr-auto" md="6">
-                  <h3 className="title">Search</h3>
-                  <h5 className="description">
-                   Use the form below to search images on unsplash.com
+                  <h3 className="title my-0" style = {{marginTop: "0"}}>Search</h3>
+                  <h5 className="description my-1">
+                    Use the form below to search images on unsplash.com
                   </h5>
                 </Col> 
+                <Col className="ml-auto mr-auto mb-5" md="6">
+                  <InputGroup className={leftFocus ? "input-group-focus" : ""}>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="fa fa-search"></i>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="Enter search keywords"
+                      type="text"
+                      onChange = {(event)=> handleChange(event)}
+                      onFocus={() => setLeftFocus(true)}
+                      onBlur={() => setLeftFocus(false)}
+                    ></Input>
+                  </InputGroup>
+                  <div className="send-button">
+                  <Button
+                    block
+                    className="btn-round"
+                    color="info"
+                    onClick={() => {setSearchImagesPage(1); searchImages()}}
+                    size="lg"
+                  >
+                    Search
+                  </Button>
+                </div>
+                </Col> 
                   <Col className="ml-auto mr-auto" md="10">
-                    <Row className="collections">
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg6.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg11.jpg")}
-                        ></img>
-                      </Col>
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg7.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg8.jpg")}
-                        ></img>
+                    <Row className="collections justify-content-center">
+                      {
+                        imagesLoading ? (
+                          <Col className = "pb-5"  style = {{justifyContent: "center", display: "flex"}} md="6">
+                            <Spinner style={{ width: '3rem', height: '3rem'}} />
+                          </Col>
+                        ) : searchedImages.length === 0 ? (
+                          <Col className = "pb-5"  style = {{justifyContent: "center", display: "flex"}} md="6">
+                            <div>No results.</div>
+                          </Col>
+                        ) : searchedImages.map((element, index)=>{
+                          return(<Col md="6" key = {index}>
+                            <img
+                              alt= {element.alt_description}
+                              height= "300"
+                              width = "445"
+                              className="img-raised"
+                              src={element.urls.regular}
+                            ></img>
+                          </Col>)
+                        })
+                      }
+                    </Row>
+                    <Row>
+                      <Col md="12">
+                        <Pagination
+                          style={{
+                            display: "flex",
+                            justifyContent: "center"
+                          }}>
+                          <PaginationItem>
+                            <PaginationLink
+                              aria-label="Previous"
+                              onClick={() => searchPaginate("previous")}
+                            >
+                              <span aria-hidden={true}>
+                                <i
+                                  aria-hidden={true}
+                                  className="fa fa-angle-double-left"
+                                ></i>
+                              </span>
+                            </PaginationLink>
+                          </PaginationItem>
+                          <PaginationItem>
+                           <p>Page: {searchImagesPage}</p>
+                          </PaginationItem>
+                          <PaginationItem>
+                            <PaginationLink
+                              aria-label="Next"
+                              onClick={()=> searchPaginate("next")}
+                            >
+                              <span aria-hidden={true}>
+                                <i
+                                  aria-hidden={true}
+                                  className="fa fa-angle-double-right"
+                                ></i>
+                              </span>
+                            </PaginationLink>
+                          </PaginationItem>
+                        </Pagination>
                       </Col>
                     </Row>
                   </Col>

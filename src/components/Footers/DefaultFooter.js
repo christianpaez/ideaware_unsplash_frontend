@@ -11,7 +11,7 @@ function DefaultFooter() {
     <>
       <footer className="footer footer-default">
         <Container>
-          <nav>
+          {/* <nav>
             <ul>
               <li>
                 <a
@@ -38,10 +38,10 @@ function DefaultFooter() {
                 </a>
               </li>
             </ul>
-          </nav>
+          </nav> */}
           <div className="copyright" id="copyright">
-            © {new Date().getFullYear()}, Designed by{" "}
-            <a
+            © {new Date().getFullYear()} Christian Páez{" "}
+            {/* <a
               href="https://www.invisionapp.com?ref=nukr-default-footer"
               target="_blank"
             >
@@ -53,7 +53,7 @@ function DefaultFooter() {
               target="_blank"
             >
               Creative Tim
-            </a>
+            </a> */}
             .
           </div>
         </Container>
