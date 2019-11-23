@@ -49,7 +49,6 @@ function IndexNavbar() {
           <div className="navbar-translate">
             <NavbarBrand
               href="/"
-              target="_blank"
               id="navbar-brand"
             >
             <i className="now-ui-icons media-1_camera-compact mr-2"></i>
